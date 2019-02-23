@@ -1,0 +1,1 @@
+export const updateObject = (oldObject, updatedObject) => ({...oldObject, ...updatedObject});

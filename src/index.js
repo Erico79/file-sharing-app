@@ -10,7 +10,11 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
 import rootReducer from './store/rootReducer';
 
-const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
+let store;
+if (process.env.NODE_ENV !== "production")
+    store = createStore(rootReducer, composeWithDevTools(applyMiddleware(thunk)));
+else
+    store = createStore(rootReducer, applyMiddleware(thunk));
 
 const app = (
     <Provider store={store}>

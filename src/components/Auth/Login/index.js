@@ -10,13 +10,17 @@ import {
     Alert,
 } from 'reactstrap';
 
-import { handleLogin } from '../../store/modules/auth';
+import { handleLogin } from '../../../store/reducers/auth';
+
+import './Login.sass'
 
 class Login extends Component {
     static propTypes = {
         isLoading: PropTypes.bool.isRequired,
         handleLogin: PropTypes.func.isRequired,
         errorMessage: PropTypes.string,
+        token: PropTypes.string,
+        history: PropTypes.object.isRequired
     }
 
     state = {
@@ -30,10 +34,16 @@ class Login extends Component {
 
     handleLogin = async event => {
         event.preventDefault();
-        this.props.handleLogin({
+        
+        await this.props.handleLogin({
             email: this.state.email,
-            password: this.state.password
+            password: this.state.password,
+            returnSecureToken: true
         });
+
+        if (this.props.token) {
+            this.props.history.push('/dashboard');
+        }
     }
 
     formatErrorMessage(messageCode) {
@@ -44,6 +54,8 @@ class Login extends Component {
                 return 'The email doesn\'t exist.'
             case 'USER_DISABLED':
                 return 'The user account has been disabled.';
+            case 'INVALID_EMAIL':
+                return 'Invalid Email.'
             default:
                 return messageCode;
         }
@@ -78,6 +90,7 @@ class Login extends Component {
 const mapStateToProps = state => ({
     isLoading: state.auth.isLoading,
     errorMessage: state.auth.errorMessage,
+    token: state.auth.token
 })
 
 const mapDispatchToProps = dispatch => ({
